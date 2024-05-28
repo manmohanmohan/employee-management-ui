@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Search</title>
+</head>
+<body>
+  <div class="search-container">
+    <input type="text" [(ngModel)]="departmentName" placeholder="Enter Department Name" (ngModelChange)="onDepartmentNameChange()">
+    <button (click)="fetchEmployeesByDepartment()">Get Employees by Department</button>
+    <div *ngIf="showValidationMessage && isDepartmentNameEmpty" class="error-message">Enter department name</div>
+  </div>
+  
+  <div *ngIf="showEmployeeSearchResult" class="search-result">
+    <div *ngIf="employeesByDepartment.length > 0; else noEmployeesFoundInDepartment">
+      <h3>Employees in {{ departmentName }} Department</h3>
+      <ul>
+        <li *ngFor="let employee of employeesByDepartment">{{ employee.name }} - {{ employee.salary }}</li>
+      </ul>
+    </div>
+  </div>
+  
+  <ng-template #noEmployeesFoundInDepartment>
+    <p class="no-employees-message">No employees found in {{ departmentName }} department.</p>
+  </ng-template>
+
+  <div class="search-container">
+    <label>
+      <input type="radio" name="salaryToggle" [(ngModel)]="salaryFilter" [value]="10000" (change)="fetchEmployeesBySalary()">
+      &lt; 10K
+    </label>
+    <label>
+      <input type="radio" name="salaryToggle" [(ngModel)]="salaryFilter" [value]="10001" (change)="fetchEmployeesBySalary()">
+      &gt; 10K
+    </label>
+  </div>
+  
+  <div *ngIf="employeesBySalary.length > 0" class="search-result">
+    <h3>Employees with salary {{ salaryFilter == 10000 ? '&lt; 10K' : '&gt; 10K' }}</h3>
+    <ul>
+      <li *ngFor="let employee of employeesBySalary">{{ employee.name }}</li>
+    </ul>
+  </div>
+  
+  <ng-template #noEmployeesFound>
+    <p class="no-employees-message">No employees found for the given salary.</p>
+  </ng-template>
+</body>
+</html>

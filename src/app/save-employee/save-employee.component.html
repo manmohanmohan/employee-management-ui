@@ -1,0 +1,21 @@
+<body>
+    <div class="container">
+      <h2>Save Employee Details</h2>
+      <form (ngSubmit)="onSubmit()">
+        <div>
+          <label for="name">Name:</label>
+          <input type="text" id="name" [(ngModel)]="employee.name" name="name" required>
+        </div>
+        <div>
+          <label for="department">Department:</label>
+          <input type="text" id="department" [(ngModel)]="employee.department" name="department" required>
+        </div>
+        <div>
+          <label for="salary">Salary:</label>
+          <input type="number" id="salary" [(ngModel)]="employee.salary" name="salary" required>
+        </div>
+        <button type="submit">Save Employee</button>
+      </form>
+      <div class="message" *ngIf="message">{{ message }}</div>
+    </div>
+  </body>
