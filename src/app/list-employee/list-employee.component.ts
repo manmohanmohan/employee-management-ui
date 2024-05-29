@@ -1,16 +1,17 @@
 import { Component, DoCheck, OnChanges, OnInit } from '@angular/core';
-import { EmployeeService } from './employee.service';
-import { Employee } from './employee.model';
+import { EmployeeService } from '../employee.service';
+import { Employee } from '../employee.model';
 
 @Component({
-  selector: 'app-employee',
-  templateUrl: './employee.component.html',
-  styleUrls: ['./employee.component.css']
+  selector: 'app-list-employee',
+  templateUrl: './list-employee.component.html',
+  styleUrls: ['./list-employee.component.css']
 })
-export class EmployeeComponent implements OnInit,OnChanges, DoCheck {
+export class ListEmployeeComponent implements OnInit,OnChanges, DoCheck {
 
   departmentName: string = '';
-  salaryFilter: number = 10000;
+  salaryToggle: boolean = false;
+  salary: number  = 10000;
   employeesByDepartment: Employee[] = [];
   employeesBySalary: Employee[] = [];
   isDepartmentNameEmpty:boolean=true;
@@ -22,6 +23,7 @@ export class EmployeeComponent implements OnInit,OnChanges, DoCheck {
 
   ngOnInit(): void {
     console.log('ngOnInit: EmployeeComponent');
+    this.fetchEmployeesBySalary();
   }
 
   ngOnChanges(): void {
@@ -42,29 +44,22 @@ export class EmployeeComponent implements OnInit,OnChanges, DoCheck {
     }
     this.isDepartmentNameEmpty = false;
     this.employeesByDepartment=[];
-    this.employeeService.getEmployeesByDepartment(this.departmentName).subscribe(
-      data => this.employeesByDepartment = data,
-      error => console.error('Error fetching employees by department', error)
-    );
+    this.employeeService.getEmployeesByDepartment(this.departmentName).subscribe({
+      next:(data) => this.employeesByDepartment = data,
+      error: (error) => console.error('Error fetching employees by department', error)
+  });
   }
 
   fetchEmployeesBySalary(): void {
-    let salary: number;
-    let salaryToggle: boolean;
-    if (this.salaryFilter === 10000) {
-      salary = 10000;
-      salaryToggle=false
-    } else {
-      // Assuming the other option is for salary greater than 10000
-      salary = 10001;
-      salaryToggle=true;
-    }
+
     this.employeesBySalary = [];
-    this.employeeService.getEmployeesBySalary(salary, salaryToggle).subscribe(
-      data => this.employeesBySalary = data,
-      error => console.error('Error fetching employees by salary', error)
+    this.employeeService.getEmployeesBySalary(this.salary, this.salaryToggle).subscribe({
+      next:data => this.employeesBySalary = data,
+      error:error => console.error('Error fetching employees by salary', error)
+    }
     );
   }
+
 
   onDepartmentNameChange() {
     this.isDepartmentNameEmpty = false;

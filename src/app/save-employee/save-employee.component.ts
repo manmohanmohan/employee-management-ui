@@ -21,15 +21,26 @@ export class SaveEmployeeComponent {
 
   message: string | null = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   onSubmit() {
     this.http.post('http://localhost:8080/employee/save', this.employee, { responseType: 'text' })
-      .subscribe(response => {
-        this.message = response;
-      }, error => {
-        console.error('Error saving employee', error);
-        this.message = 'Error saving employee';
+      .subscribe({
+        next: (response) => {
+          this.message = response;
+          this.clear();
+        },
+        error: (e) => {
+          console.error('Error saving employee', e);
+          this.message = 'Error saving employee';
+        }
       });
+  }
+  clear() {
+    this.employee = {
+      name: '',
+      department: '',
+      salary: 0
+    };
   }
 }

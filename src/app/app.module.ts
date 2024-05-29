@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DepartmentComponent } from './department/department.component';
-import { EmployeeComponent } from './employee/employee.component';
+import { ListEmployeeComponent } from './list-employee/list-employee.component';
 import { HttpClientModule } from '@angular/common/http';
 import { SaveEmployeeComponent } from './save-employee/save-employee.component';
 
@@ -13,7 +13,7 @@ import { SaveEmployeeComponent } from './save-employee/save-employee.component';
   declarations: [
     AppComponent,
     DepartmentComponent,
-    EmployeeComponent,
+    ListEmployeeComponent,
     SaveEmployeeComponent
   ],
   imports: [
