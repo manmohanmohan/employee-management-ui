@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { EmployeeService } from '../employee.service';
 
 interface EmployeeDTO {
   name: string;
@@ -21,10 +21,10 @@ export class SaveEmployeeComponent {
 
   message: string | null = null;
 
-  constructor(private http: HttpClient) { }
+  constructor(private employeeService: EmployeeService) { }
 
   onSubmit() {
-    this.http.post('http://localhost:8080/employee/save', this.employee, { responseType: 'text' })
+    this.employeeService.saveEmployee(this.employee)
       .subscribe({
         next: (response) => {
           this.message = response;

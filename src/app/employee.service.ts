@@ -1,44 +1,46 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, catchError, throwError } from 'rxjs';
+import { Observable, catchError, map } from 'rxjs';
 import { Employee } from './employee.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EmployeeService {
 
-  private baseUrl = 'http://localhost:8080/employee';
+  private apiBaseUrl = environment.apiBaseUrl;
 
   constructor(private http: HttpClient) { }
 
   getEmployeesByDepartment(departmentName: string): Observable<Employee[]> {
-    return this.http.get<Employee[]>(`${this.baseUrl}/by-department?departmentName=${departmentName}`);
+    return this.http.get<Employee[]>(`${this.apiBaseUrl}/departments/${departmentName}/employees`);
   }
 
-  // getEmployeesBySalary(salary: number, salaryToggle:boolean): Observable<Employee[]> {
-  //   return this.http.get<Employee[]>(`${this.baseUrl}/by-salary?salary=${salary}&checkGreater=${salaryToggle}`);
-  // }
-
-    getEmployeesBySalary(salary: number, salaryToggle:boolean): Observable<Employee[]> {
-    return this.http.get<Employee[]>(`${this.baseUrl}/by-salary?salary=${salary}&isGreaterThan=${salaryToggle}`)
-    .pipe(catchError((error: HttpErrorResponse) => {
-      if (error.status === 404) {
-        // Handle 404 error (no employees found)
-        console.error('No employees found for the given salary');
-        return throwError('No employees found for the given salary');
-      } else {
-        // Forward other errors
-        return throwError('Error fetching employees by salary');
-      }
-    }));
+  getEmployeesBySalary(salary: number, isGreaterThan: boolean): Observable<Employee[]> {
+    return this.http.get<Employee[]>(`${this.apiBaseUrl}/employees/salary?salary=${salary}&isGreaterThan=${isGreaterThan}`)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error fetching employees by salary', error);
+          return [];
+        }),
+        map((employees: Employee[]) => {
+          // Check if the response is an empty array
+          if (Array.isArray(employees) && employees.length === 0) {
+            console.log('No employees found for the given salary');
+            // You can return a message or handle this scenario as per your requirement
+          }
+          return employees;
+        })
+      );
   }
 
   getAllEmployees(): Observable<Employee[]> {
-    return this.http.get<Employee[]>(this.baseUrl);
+    return this.http.get<Employee[]>(`${this.apiBaseUrl}/employees`);
   }
 
   saveEmployee(employee: Employee): Observable<any> {
-    return this.http.post(`${this.baseUrl}/save`, employee, { responseType: 'text' });
+    console.log('API URL:', this.apiBaseUrl);
+    return this.http.post(`${this.apiBaseUrl}/employees`, employee, { responseType: 'text' });
   }
 }
